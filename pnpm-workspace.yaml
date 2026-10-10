@@ -3,3 +3,9 @@ allowBuilds:
   protobufjs: true
   unrs-resolver: true
   sharp: false
+overrides:
+  # Patch protobufjs within its 8.x major (safe minor bump) to clear 5 high
+  # advisories. We do NOT override @opentelemetry/* here: the fix for the Jaeger
+  # propagator advisory requires the OTel 2.x major, which the mandatory neatlogs
+  # 1.1.26 package (pinned to the OTel 1.x stack) cannot load. See audit-allowlist.json.
+  protobufjs@>=8.0.0 <=8.6.5: ^8.6.6

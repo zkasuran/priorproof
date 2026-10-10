@@ -1,0 +1,15 @@
+{
+  "_comment": "Reviewed, accepted high/critical npm advisories. verify.sh fails on any high/critical with a fix that is NOT listed here. Each entry is a deliberate exception with a reason, re-evaluated when the upstream situation changes. See SECURITY.md.",
+  "accept": [
+    {
+      "module": "@opentelemetry/propagator-jaeger",
+      "id": "GHSA-45rx-2jwx-cxfr",
+      "reason": "Denial of service in JaegerPropagator.extract via a malformed header. The fix is >=2.9.0, which pulls the OpenTelemetry 2.x core. The mandatory neatlogs 1.1.26 package is pinned to the OpenTelemetry 1.x stack (sdk-trace-node 1.30.1), and forcing core 2.x removes exports neatlogs needs (hexToBinary, getEnvWithoutDefaults) and breaks the build. PriorProof never configures or uses the Jaeger propagator, so no untrusted header reaches it. Re-evaluate when neatlogs ships an OpenTelemetry 2.x build."
+    },
+    {
+      "module": "braces",
+      "id": "GHSA-vfj7-8cjw-p6xm",
+      "reason": "Stack-exhaustion denial of service in braces <=3.0.3, with no upstream fix available. Dev-only: it reaches the tree solely through eslint-config-next -> @next/eslint-plugin-next -> fast-glob -> micromatch -> braces, so it is never bundled into the deployed app and only runs on trusted lint input during development."
+    }
+  ]
+}

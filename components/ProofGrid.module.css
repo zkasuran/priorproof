@@ -1,0 +1,66 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.row {
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 14px 16px;
+  display: grid;
+  gap: 8px;
+}
+.row[data-state="gap"] {
+  border-color: color-mix(in srgb, var(--gap) 40%, var(--edge));
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.id {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.text {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.note {
+  display: grid;
+  gap: 3px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.note[data-state="proven"] {
+  background: var(--proven-bg);
+}
+.note[data-state="gap"] {
+  background: var(--gap-bg);
+}
+.noteLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.note[data-state="proven"] .noteLabel {
+  color: var(--proven);
+}
+.note[data-state="gap"] .noteLabel {
+  color: var(--gap);
+}
+.noteBody {
+  color: var(--ink);
+  line-height: 1.45;
+}
+@media (max-width: 680px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -1,0 +1,211 @@
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--edge);
+  border-left-width: 4px;
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.pending {
+  border-left-color: var(--pending);
+  background: var(--pending-bg);
+  opacity: 0.85;
+}
+
+.resolving {
+  border-left-color: var(--acc);
+}
+
+.proven {
+  border-left-color: var(--proven);
+  background: var(--proven-bg);
+}
+
+.gap {
+  border-left-color: var(--gap);
+  background: var(--gap-bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.id {
+  font-family: var(--font-geist-mono, ui-monospace, monospace);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+  color: var(--muted);
+}
+
+.group {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.verdict {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.verdictProven {
+  color: var(--proven);
+}
+
+.verdictGap {
+  color: var(--gap);
+}
+
+.verdictPending {
+  color: var(--pending);
+}
+
+.verdictResolving {
+  color: var(--acc);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.passes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pass {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 4px 9px;
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.passFound {
+  color: var(--proven);
+  border-color: color-mix(in srgb, var(--proven) 40%, var(--edge));
+}
+
+.passMissing {
+  color: var(--gap);
+  border-color: color-mix(in srgb, var(--gap) 40%, var(--edge));
+}
+
+.passWaiting {
+  color: var(--pending);
+}
+
+.passLabel {
+  font-weight: 600;
+}
+
+.cite {
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--proven) 35%, var(--edge));
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.citeSection {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--proven);
+  margin-bottom: 4px;
+}
+
+.gapBox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--gap) 35%, var(--edge));
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.refused {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--gap);
+  padding: 2px 8px;
+  border: 1px solid var(--gap);
+  border-radius: 6px;
+}
+
+.gapReason {
+  color: var(--ink);
+}
+
+.rationale {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.skeleton {
+  height: 12px;
+  width: 60%;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--pending) 40%, transparent);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

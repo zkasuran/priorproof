@@ -1,0 +1,31 @@
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 8px;
+  border: 1px solid var(--edge);
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.toggle:hover {
+  border-color: color-mix(in srgb, var(--ink) 24%, var(--edge));
+}
+
+/* The icon follows the global theme attribute, so no React state drives it and
+   the server and client markup are identical. */
+.sun,
+.moon {
+  display: none;
+}
+:root[data-theme="light"] .sun {
+  display: inline-flex;
+}
+:root[data-theme="dark"] .moon {
+  display: inline-flex;
+}
