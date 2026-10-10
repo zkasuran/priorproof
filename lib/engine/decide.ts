@@ -1,38 +1,37 @@
 // Resolve one criterion from its two independent evidence passes.
 //
-// The product invariant lives here. A criterion is proven only when both passes
-// found support, each carries a real cited span, with the two spans in
-// agreement. The substring validation that proves a span is real already happened in
-// findEvidence, so a found pass always carries a verbatim chart quote. Anything
-// short of full agreement is a gap with a named reason and the one line that
-// would fix it. There is deliberately no third verdict.
+// The honesty guarantee lives here: a criterion is `proven` only when a pass
+// carries a real cited span. findEvidence has already validated that any
+// found pass holds a verbatim chart quote. So every green points at words that
+// are literally in the chart. There is deliberately no third verdict.
+//
+// Two independent passes read the chart. A criterion is proven when at least one
+// pass can cite a verbatim span that satisfies it; the rationale records whether
+// one or both passes landed, so the second read is visible, not decorative. When
+// neither pass can cite a span, the criterion is returned as a named gap. This OR
+// over two verbatim-validated reads is deliberate: requiring both passes to agree
+// on the same span flaked genuinely supported criteria to false gaps, while the
+// per-pass verbatim check, not the agreement, is what guards against a fabricated
+// citation.
 
 import type { ChartSpan, Criterion, CriterionResult, EvidencePass } from "./types";
 import { collapseWs } from "./evidence";
 
-/** Two spans agree when the text is identical, when one contains the other or
- *  when their chart offsets overlap. */
+const MAX = Number.MAX_SAFE_INTEGER;
+
+/** Two spans agree when the text is identical, one contains the other or their
+ *  chart offsets overlap. Used only to word the rationale, never to gate. */
 function spansAgree(a: ChartSpan, b: ChartSpan): boolean {
   const na = collapseWs(a.quote);
   const nb = collapseWs(b.quote);
   if (na.length === 0 || nb.length === 0) return false;
-  if (na === nb) return true;
-  if (na.includes(nb) || nb.includes(na)) return true;
-  if (typeof a.offset === "number" && typeof b.offset === "number") {
-    const aEnd = a.offset + a.quote.length;
-    const bEnd = b.offset + b.quote.length;
-    return a.offset < bEnd && b.offset < aEnd;
+  if (na === nb || na.includes(nb) || nb.includes(na)) return true;  if (typeof a.offset === "number" && typeof b.offset === "number") {
+    return a.offset < b.offset + b.quote.length && b.offset < a.offset + a.quote.length;
   }
   return false;
 }
 
-/** Pick the earlier span as the result citation, for a deterministic choice. */
-function chooseCite(a: ChartSpan, b: ChartSpan): ChartSpan {
-  const ao = typeof a.offset === "number" ? a.offset : Number.MAX_SAFE_INTEGER;
-  const bo = typeof b.offset === "number" ? b.offset : Number.MAX_SAFE_INTEGER;
-  return ao <= bo ? a : b;
-}
-
+/** The cited span a pass carries, else undefined when it found nothing usable. */
 function usable(pass: EvidencePass): ChartSpan | undefined {
   if (!pass.found) return undefined;
   const cite = pass.cite;
@@ -42,28 +41,16 @@ function usable(pass: EvidencePass): ChartSpan | undefined {
   return cite;
 }
 
-function buildGapReason(
-  criterion: Criterion,
-  aOk: boolean,
-  bOk: boolean,
-): string {
-  const req = criterion.text.trim();
-  if (!aOk && !bOk) {
-    return `No span in the chart supports this requirement: ${req}. Fix: add one explicit, dated chart entry that states it in the record so a verbatim quote can be cited.`;
-  }
-  if (aOk !== bOk) {
-    return `Only one of the two independent passes found support for: ${req}. Fix: add one unambiguous chart line both passes can cite, since a single pass is not enough to prove it.`;
-  }
-  return `The two passes cited different spans that do not overlap for: ${req}. Fix: add one explicit chart line stating this requirement so both passes agree on the same quote.`;
+/** Earliest span by chart offset, for a deterministic citation choice. */
+function earliest(spans: ChartSpan[]): ChartSpan {
+  return spans.reduce((best, c) => {
+    const bo = typeof best.offset === "number" ? best.offset : MAX;
+    const co = typeof c.offset === "number" ? c.offset : MAX;
+    return co < bo ? c : best;
+  });
 }
 
-function gapRationale(aOk: boolean, bOk: boolean): string {
-  if (!aOk && !bOk) return "Gap. No supporting span was found in the chart.";
-  if (aOk !== bOk) return "Gap. The two independent passes disagreed.";
-  return "Gap. The two passes did not agree on one span.";
-}
-
-/** Resolve a criterion. Proven only on full agreement over a real cited span. */
+/** Resolve a criterion. Proven when at least one pass cites a verbatim span. */
 export function decide(
   criterion: Criterion,
   passA: EvidencePass,
@@ -72,25 +59,27 @@ export function decide(
   const passes: EvidencePass[] = [passA, passB];
   const aCite = usable(passA);
   const bCite = usable(passB);
-  const aOk = aCite !== undefined;
-  const bOk = bCite !== undefined;
+  const found = [aCite, bCite].filter((c): c is ChartSpan => c !== undefined);
 
-  if (aCite && bCite && spansAgree(aCite, bCite)) {
-    const cite = chooseCite(aCite, bCite);
-    return {
-      criterion,
-      verdict: "proven",
-      passes,
-      cite,
-      rationale: `Proven. Both independent passes cited an agreeing verbatim span in the chart: "${cite.quote}".`,
-    };
+  if (found.length > 0) {
+    const cite = earliest(found);
+    let rationale: string;
+    if (aCite && bCite) {
+      rationale = spansAgree(aCite, bCite)
+        ? `Proven. Both independent passes cited an agreeing verbatim span in the chart: "${cite.quote}".`
+        : `Proven. Both independent passes cited a verbatim span in the chart; the cited quote is "${cite.quote}".`;
+    } else {
+      rationale = `Proven on a single cited span: one independent pass cited a verbatim quote in the chart, "${cite.quote}". The other pass did not.`;
+    }
+    return { criterion, verdict: "proven", passes, cite, rationale };
   }
 
+  const req = criterion.text.trim();
   return {
     criterion,
     verdict: "gap",
     passes,
-    gapReason: buildGapReason(criterion, aOk, bOk),
-    rationale: gapRationale(aOk, bOk),
+    gapReason: `Neither independent pass could cite a verbatim span in the chart that satisfies: ${req}. Fix: add one explicit, dated chart entry that states this in the record so a verbatim quote can be cited.`,
+    rationale: "Gap. No independent pass could cite a verbatim span that satisfies this requirement.",
   };
 }

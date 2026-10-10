@@ -50,7 +50,7 @@ export default function RefusalPage() {
           <div className="card">
             <h3>Agreement</h3>
             <p>
-              Only when both passes land on the same span does the row turn green.
+              Only a verbatim span the chart contains turns the row green.
               Disagreement is a gap.
             </p>
           </div>

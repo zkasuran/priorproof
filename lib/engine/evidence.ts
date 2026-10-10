@@ -9,10 +9,10 @@
 import type { ChartSpan, Criterion, EvidencePass, LlmClient } from "./types";
 
 const SYSTEM_PASS_1 =
-  "You are a prior-authorization reviewer. You read one payer policy criterion plus a patient chart, then decide whether the chart gives direct support for that single criterion. You never invent support. When the chart does not clearly support it you answer not found.";
+  "You are a prior-authorization reviewer. You read one payer policy criterion and a patient chart, then decide whether the chart gives direct support for that single criterion. Read the whole chart before deciding. You never invent support and you cite only text that is present verbatim. When the chart does not support the criterion you answer not found.";
 
 const SYSTEM_PASS_2 =
-  "You are a second independent clinical auditor. Working only from the patient chart, you decide whether the record by itself proves this one policy requirement. You do not assume facts the chart does not state. When the proof is absent you answer not found.";
+  "You are a second independent prior-authorization reviewer. Working from the patient chart, you decide whether the record supports this one policy requirement. Read every section of the chart (history, examination, imaging, treatments, medications and functional status) before deciding. You cite only text that is present verbatim and never assume facts the chart does not state. When the chart genuinely does not support it you answer not found.";
 
 /** Build the per-pass prompt. The pass number and criterion id are included so a
  *  deterministic test client can answer without a network call. */
@@ -23,7 +23,7 @@ function buildEvidencePrompt(
 ): string {
   return [
     `Independent pass ${pass} of 2.`,
-    `Decide if the chart below supports this one criterion.`,
+    `Read the entire chart below, every section, then decide if it supports this one criterion.`,
     `Criterion [${criterion.id}]: ${criterion.text}`,
     ``,
     `CHART:`,
@@ -31,8 +31,10 @@ function buildEvidencePrompt(
     chart,
     `>>>`,
     ``,
+    `A criterion is satisfied when the chart states a fact that meets it, even if the words differ: a specific drug that belongs to a named drug class satisfies that class. A specific finding that is an instance of a named category satisfies that category.`,
+    `Do not accept a near match. When the criterion names a specific form, setting, duration or document (for example in-person rather than home or confirmed by a named record), a chart entry that lacks that specific element does not satisfy it, so answer not found.`,
     `Return only JSON of the form {"found": true, "quote": "<one span copied verbatim from the chart>", "reasoning": "<one or two sentences>"}.`,
-    `Copy the quote exactly from the chart. Do not paraphrase. When nothing in the chart supports the criterion, set found to false with an empty quote.`,
+    `Copy the quote character for character from the chart, including punctuation and line breaks. Do not shorten, merge or paraphrase. When nothing in the chart supports the criterion, set found to false with an empty quote.`,
   ].join("\n");
 }
 

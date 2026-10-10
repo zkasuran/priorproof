@@ -46,8 +46,8 @@ export default function MethodologyPage() {
           <div className="card">
             <h3>4. Resolve</h3>
             <p>
-              Green only when both passes agree on the same span. Otherwise the row
-              is a gap.
+              Green only when a pass cites a verbatim span that satisfies it.
+              Otherwise the row is a gap.
             </p>
           </div>
         </div>
@@ -57,15 +57,15 @@ export default function MethodologyPage() {
         <div className="shead">
           <h2>Why two directions</h2>
           <p>
-            A single pass can talk itself into a weak match. Checking from both
-            sides means a green survives being read against the policy and against
-            the record, not just one of them.
+            A single read can miss a real match or talk itself into a weak one.
+            Reading from both directions, policy to record and record to policy,
+            surfaces more genuine support and still greens only on a verbatim cited span.
           </p>
         </div>
         <ul className="plist">
           <li>
-            Agreement is on the span, not the verdict. Both passes must land on the
-            same quote, so a green is traceable to one piece of text.
+            A green is traceable to one verbatim quote, not a verdict. Every proven
+            row carries the exact span a pass cited from the chart.
           </li>
           <li>
             Both passes are kept on the result for the audit trail, including the

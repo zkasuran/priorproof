@@ -41,17 +41,17 @@ export default function Home() {
           <span className="eyebrow">The invariant</span>
           <h2>A green row always points at the words that earned it.</h2>
           <p>
-            Two independent passes have to agree on the same cited span. Anything
-            the chart cannot support comes back red, named, with the one line that
-            would fix it.
+            Two independent passes read the chart. A green always carries the
+            verbatim span one of them cited. Anything the chart cannot support
+            comes back red, named, with the one line that would fix it.
           </p>
         </div>
         <div className="grid grid-3">
           <div className="card">
-            <h3>Two passes, one span</h3>
+            <h3>Two reads, one cited span</h3>
             <p>
               Policy to record and record to policy. A criterion is proven only
-              when both land on the same quote.
+              when a pass can cite the exact span that proves it.
             </p>
           </div>
           <div className="card">

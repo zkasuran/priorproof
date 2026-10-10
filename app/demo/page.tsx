@@ -35,7 +35,7 @@ export default function DemoPage() {
         <h1 className={styles.title}>PriorProof live demo</h1>
         <p className={styles.subtitle}>
           Pick a payer policy and run it against a synthetic chart. Each criterion turns green only
-          when a chart span proves it and both passes agree. Everything else stays a named gap.
+          when a verbatim chart span proves it. Everything else stays a named gap.
         </p>
       </header>
 

@@ -9,7 +9,7 @@ export interface CriterionResult {
   criterion: Criterion;
   verdict: Verdict;
   passes: EvidencePass[];
-  // Present if and only if proven: the span both passes agreed on.
+  // Present if and only if proven: the cited span.
   cite?: ChartSpan;
   // Present if and only if gap: what is missing and the one line that fixes it.
   gapReason?: string;
@@ -53,7 +53,7 @@ export default function EnginePage() {
           <div className="card">
             <h3>A cite rides every green</h3>
             <p>
-              The span both passes agreed on travels on the result, so a reviewer
+              The cited span travels on the result, so a reviewer
               can follow it.
             </p>
           </div>

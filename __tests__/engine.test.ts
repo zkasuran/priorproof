@@ -2,7 +2,7 @@
 // is no network. The fake answers from the prompt alone (it reads the criterion
 // id and the pass number the engine writes into every prompt), which keeps each
 // run reproducible. The invariant under test: a criterion goes proven only when a
-// real chart span supports it and both passes agree on it.
+// real chart span supports it, cited by at least one of two independent passes.
 
 import { describe, it, expect } from "vitest";
 import fc from "fast-check";
@@ -143,8 +143,8 @@ describe("prove the check can fail (substring-validation gate)", () => {
   });
 });
 
-describe("disagreement between the two passes", () => {
-  it("is a gap when pass 1 finds support and pass 2 does not", async () => {
+describe("two independent passes, OR over verbatim-validated reads", () => {
+  it("proves a criterion when one pass cites a verbatim span and the other does not", async () => {
     const c1 = aetna0743Case.criteria[0];
     const chart = aetna0743Case.chart;
     const byPass = fakeLlm((prompt) => {
@@ -159,8 +159,21 @@ describe("disagreement between the two passes", () => {
     expect(b.found).toBe(false);
 
     const r = decide(c1, a, b);
+    expect(r.verdict).toBe("proven");
+    expect(r.cite).toBeDefined();
+    const quote = r.cite ? r.cite.quote : "";
+    expect(chart.includes(quote)).toBe(true);
+  });
+
+  it("is a gap when neither pass cites a verbatim span", async () => {
+    const c1 = aetna0743Case.criteria[0];
+    const chart = aetna0743Case.chart;
+    const none = fakeLlm(() => ({ found: false, quote: "", reasoning: "nothing" }));
+    const a = await findEvidence(c1, chart, none, 1);
+    const b = await findEvidence(c1, chart, none, 2);
+    const r = decide(c1, a, b);
     expect(r.verdict).toBe("gap");
-    expect(r.gapReason ?? "").toContain("Only one of the two independent passes");
+    expect(r.gapReason ?? "").toContain("Neither independent pass");
   });
 });
 

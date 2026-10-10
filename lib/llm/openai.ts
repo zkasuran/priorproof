@@ -67,6 +67,12 @@ function cleanError(err: unknown, callerSignal: AbortSignal | undefined): Error 
 export function createOpenAiClient(apiKey: string): LlmClient {
   const model = process.env.OPENAI_MODEL || DEFAULT_MODEL;
   const baseURL = process.env.OPENAI_BASE_URL || undefined;
+  // Low temperature by default so the two independent passes reliably find the
+  // same unambiguous support instead of flaking criterion to criterion.
+  const temperature =
+    process.env.OPENAI_TEMPERATURE !== undefined
+      ? Number(process.env.OPENAI_TEMPERATURE)
+      : 0;
   const client = new OpenAI({ apiKey, baseURL });
 
   return {
@@ -89,6 +95,7 @@ export function createOpenAiClient(apiKey: string): LlmClient {
                 { role: "system", content: system },
                 { role: "user", content: args.prompt },
               ],
+              temperature,
               // OpenAI's field is max_completion_tokens; OpenAI-compatible
               // endpoints such as MiniMax expect the classic max_tokens.
               max_completion_tokens: baseURL ? undefined : args.maxTokens,
