@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# internal working material, never shipped to the public repo (house rules)
+/CONTENT-*.html
+/submit/
+/DEMO-*.mp4
+/upload-*/

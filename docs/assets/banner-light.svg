@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-label="PriorProof: Prove every prior-auth criterion or return it as a named gap.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f3f6fb"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f74e4"/>
+      <stop offset="1" stop-color="#175cd3"/>
+    </linearGradient>
+    <style>
+      .f{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
+    </style>
+  </defs>
+
+  <rect width="1280" height="400" fill="url(#bg)"/>
+  <rect x="0" y="396" width="1280" height="4" fill="#175cd3"/>
+
+  <!-- shield mark -->
+  <g transform="translate(80,104)">
+    <path d="M40 4 L72 16 L72 48 C72 72 58 86 40 95 C22 86 8 72 8 48 L8 16 Z"
+          fill="url(#mark)" stroke="#115099" stroke-width="1" stroke-linejoin="round"/>
+    <path d="M23 49 L35 61 L58 33" fill="none" stroke="#ffffff" stroke-width="8"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- wordmark + eyebrow -->
+  <text class="f" x="180" y="118" font-size="17" font-weight="600" letter-spacing="3.5" fill="#175cd3">PRIOR AUTHORIZATION, PROVEN</text>
+  <text class="f" x="178" y="178" font-size="66" font-weight="700" fill="#0b1220">PriorProof</text>
+  <rect x="180" y="198" width="118" height="5" rx="2.5" fill="#175cd3"/>
+
+  <!-- tagline -->
+  <text class="f" x="82" y="276" font-size="30" font-weight="600" fill="#0b1220">Prove every prior-auth criterion</text>
+  <text class="f" x="82" y="320" font-size="30" font-weight="600" fill="#5b6673">or return it as a named gap.</text>
+
+  <!-- coverage-matrix motif (right 40%) -->
+  <g class="f" font-size="13">
+    <!-- proven rows -->
+    <g>
+      <rect x="812" y="92" width="388" height="56" rx="12" fill="#f6f8fb" stroke="#e4e9f0"/>
+      <circle cx="840" cy="120" r="7" fill="#16a34a"/>
+      <rect x="862" y="106" width="150" height="9" rx="4" fill="#d7dee8"/>
+      <rect x="1052" y="110" width="130" height="20" rx="6" fill="#e7f6ec"/>
+      <text x="1066" y="124" fill="#15803d" font-weight="600">proven</text>
+    </g>
+    <g>
+      <rect x="812" y="166" width="388" height="56" rx="12" fill="#f6f8fb" stroke="#e4e9f0"/>
+      <circle cx="840" cy="194" r="7" fill="#16a34a"/>
+      <rect x="862" y="180" width="128" height="9" rx="4" fill="#d7dee8"/>
+      <rect x="1052" y="184" width="130" height="20" rx="6" fill="#e7f6ec"/>
+      <text x="1066" y="198" fill="#15803d" font-weight="600">proven</text>
+    </g>
+    <g>
+      <rect x="812" y="240" width="388" height="56" rx="12" fill="#f6f8fb" stroke="#e4e9f0"/>
+      <circle cx="840" cy="268" r="7" fill="#16a34a"/>
+      <rect x="862" y="254" width="164" height="9" rx="4" fill="#d7dee8"/>
+      <rect x="1052" y="258" width="130" height="20" rx="6" fill="#e7f6ec"/>
+      <text x="1066" y="272" fill="#15803d" font-weight="600">proven</text>
+    </g>
+    <!-- the one gap -->
+    <g>
+      <rect x="812" y="314" width="388" height="56" rx="12" fill="#fdecec" stroke="#f3c2c2"/>
+      <circle cx="840" cy="342" r="7" fill="#dc2626"/>
+      <rect x="862" y="328" width="110" height="9" rx="4" fill="#eab8b8"/>
+      <rect x="1070" y="332" width="112" height="20" rx="6" fill="#fbdcdc"/>
+      <text x="1084" y="346" fill="#b42318" font-weight="600">named gap</text>
+    </g>
+  </g>
+</svg>
