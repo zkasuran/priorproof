@@ -168,7 +168,8 @@ export async function findEvidence(
 ): Promise<EvidencePass> {
   const system = pass === 1 ? SYSTEM_PASS_1 : SYSTEM_PASS_2;
   const prompt = buildEvidencePrompt(criterion, chart, pass);
-  const raw = await llm.complete({ system, prompt, json: true, maxTokens: 700 });
+  // 1024 leaves room for a reasoning model's <think> block plus the JSON answer.
+  const raw = await llm.complete({ system, prompt, json: true, maxTokens: 1024 });
 
   const rec = asRecord(safeJson(raw));
   const claimedFound = readBool(rec, "found") ?? readBool(rec, "supported") ?? false;

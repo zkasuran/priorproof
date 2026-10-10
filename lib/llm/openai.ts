@@ -62,10 +62,12 @@ function cleanError(err: unknown, callerSignal: AbortSignal | undefined): Error 
   return new Error(`openai API error: ${detail}`);
 }
 
-/** Build an LlmClient backed by the OpenAI chat completions API. */
+/** Build an LlmClient backed by the OpenAI chat completions API, or any
+ * OpenAI-compatible endpoint via OPENAI_BASE_URL (for example MiniMax). */
 export function createOpenAiClient(apiKey: string): LlmClient {
   const model = process.env.OPENAI_MODEL || DEFAULT_MODEL;
-  const client = new OpenAI({ apiKey });
+  const baseURL = process.env.OPENAI_BASE_URL || undefined;
+  const client = new OpenAI({ apiKey, baseURL });
 
   return {
     provider: "openai",
@@ -87,10 +89,17 @@ export function createOpenAiClient(apiKey: string): LlmClient {
                 { role: "system", content: system },
                 { role: "user", content: args.prompt },
               ],
-              max_completion_tokens: args.maxTokens,
-              response_format: args.json
-                ? { type: "json_object" as const }
-                : undefined,
+              // OpenAI's field is max_completion_tokens; OpenAI-compatible
+              // endpoints such as MiniMax expect the classic max_tokens.
+              max_completion_tokens: baseURL ? undefined : args.maxTokens,
+              max_tokens: baseURL ? args.maxTokens : undefined,
+              // Native json_object mode is an OpenAI feature. On a custom
+              // OpenAI-compatible endpoint, rely on the JSON instruction in the
+              // system message plus the tolerant parser in evidence.ts instead.
+              response_format:
+                args.json && !baseURL
+                  ? { type: "json_object" as const }
+                  : undefined,
             },
             { signal: merged },
           ),
@@ -99,11 +108,17 @@ export function createOpenAiClient(apiKey: string): LlmClient {
         throw cleanError(err, args.signal);
       }
 
-      const content = completion.choices[0]?.message?.content;
+      let content = completion.choices[0]?.message?.content;
       if (content == null) {
         throw new Error("openai returned an empty response");
       }
-      return content;
+      // Reasoning providers (for example MiniMax M-series via OPENAI_BASE_URL)
+      // prefix the answer with a <think>...</think> block. Keep only what
+      // follows the last closing tag so the engine parses the answer, not the
+      // model's scratch work.
+      const close = content.lastIndexOf("</think>");
+      if (close >= 0) content = content.slice(close + "</think>".length);
+      return content.trim();
     },
   };
 }
